@@ -3,137 +3,47 @@
 <head>
     <title>Chatbot</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
     <script>
-        function atualizarDialogo(sessao) {
-            // Limpa o conteúdo atual
-            var dialogSection = document.querySelector("#dialog-section .scrollable-content");
-            dialogSection.innerHTML = "";
-            console.log('depuração- atualizar dialogo, limpa o conteúdo');
-            // Adiciona as mensagens da sessão ao diálogo
-            sessao.mensagens.forEach(function (mensagem) {
-                var elementoMensagem = document.createElement("div");
-                elementoMensagem.className = mensagem.tipo; // "mensagem-usuario" ou "mensagem-bot"
-                elementoMensagem.textContent = mensagem.texto;
-                dialogSection.appendChild(elementoMensagem);
-            });
-        }
-        // Evento quando o usuário seleciona uma sessão
         document.addEventListener("DOMContentLoaded", function () {
-            document.getElementById("session-select").addEventListener("change", function () {
-                var sessaoSelecionada = this.value;
-                // Recupera a sessão selecionada do servidor ( adicionar uma rota para isso)
-                fetch('/get_session?nome_sessao=' + sessaoSelecionada)
-                    .then(response => response.json())
-                    .then(data => {
-                        atualizarDialogo(data.sessao);
+            var botaoEnviarAoChat = document.getElementById("enviar-ao-chat");
+            var TextPDF = document.getElementById("pdf-text-area");
+            var formUpload = document.querySelector("form[action='/upload']");
+            if (botaoEnviarAoChat && TextPDF && formUpload) {
+                formUpload.addEventListener("submit", function (event) {
+                    event.preventDefault();
+
+                    botaoEnviarAoChat.disabled = true;
+                    var formData = new FormData(formUpload);
+                    formData.append("texto", TextPDF.value);
+                    console.log("Envio de arquivo acionado");
+
+                    fetch("/upload", {
+                        method: "POST",
+                        body: formData
                     })
-                .catch(error => {
-                    console.error(error);
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        console.log(data);
+                        botaoEnviarAoChat.disabled = false;
+                        if (data.error_message) {
+                            alert("Erro ao enviar arquivo: " + data.error_message);
+                        }
+                        else {
+                            // Aduciona o conteúdo do elemento com id "pdf-text-area" com o texto do arquivo PDF
+                            console.log(data);
+                            var elementoPdfText = document.getElementById("pdf-text-area");
+                            if (elementoPdfText) {
+                                elementoPdfText.value = elementoPdfText.value + '\n' + data.pdf_text;
+                            }
+                        }
+                    });
                 });
-            });
-        });
-        // Torna os links clicáveis e adiciona funcionalidade de remoção
-        function setupLink(link) {
-            link.addEventListener("click", function (event) {
-                event.preventDefault(); // Impedir o comportamento padrão do link
-                var url = link.getAttribute("href");
-                window.open(url, "_blank"); // Abrir o link em uma nova aba
-            });
-            // Adiciona um botão de remoção ao lado de cada link
-            var removeButton = document.createElement("button");
-            removeButton.textContent = "X";
-            removeButton.addEventListener("click", function (event) {
-                event.preventDefault();
-                var listItem = link.parentElement; // Obtém o elemento pai (o <li> que contém o link)
-                listItem.remove(); // Remove o item da lista
-            });
-
-            link.parentElement.appendChild(removeButton);
-        }
-        var linkElements = document.querySelectorAll("#link-list a");
-        linkElements.forEach(function (link) {
-            setupLink(link);
-        });
-
-        // Evento quando o botão "Adicionar Link" é clicado
-        document.getElementById("add-link").addEventListener("click", function () {
-            var newLinkInput = document.getElementById("new-link");
-            var linkUrl = newLinkInput.value;
-
-            if (linkUrl) {
-                var linkList = document.getElementById("link-list");
-                var listItem = document.createElement("li");
-                var link = document.createElement("a");
-                link.href = linkUrl;
-                link.textContent = linkUrl;
-                listItem.appendChild(link);
-                linkList.appendChild(listItem);
-
-                setupLink(link); // Configurar o novo link com a funcionalidade de remoção
-
-                // Limpa o campo de entrada
-                newLinkInput.value = "";
             }
         });
-
-        // Torna os links clicáveis
-        var linkElements = document.querySelectorAll("#link-list a");
-        linkElements.forEach(function (link, index) {
-            link.addEventListener("click", function (event) {
-                event.preventDefault(); // Impedir o comportamento padrão do link
-                var url = link.getAttribute("href");
-                window.open(url, "_blank"); // Abrir o link em uma nova aba
-            });
-            // Adiciona um botão de remoção ao lado de cada link
-            var removeButton = document.querySelectorAll(".remove-link")[index];
-            removeButton.addEventListener("click", function (event) {
-                event.preventDefault();
-                var listItem = link.parentElement; // Obtém o elemento pai (o <li> que contém o link)
-                listItem.remove(); // Remove o item da lista
-            });
-        });
-
-        // Evento quando a página é carregada
-        window.addEventListener('load', function () {
-            // Recupera as sessões existentes do servidor
-            fetch('/get_sessions')
-                .then(response => response.json())
-                .then(data => {
-                    var sessionSelect = document.getElementById('session-select');
-                    // Limpa as opções existentes
-                    sessionSelect.innerHTML = '';
-                    // Adiciona as opções para cada sessão
-                    data.sessoes.forEach(function (sessao) {
-                        var option = document.createElement('option');
-                        option.value = sessao;
-                        option.textContent = sessao;
-                        sessionSelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        });
-        function carregarSessoes() {
-        fetch('/get_sessions')
-            .then(response => response.json())
-            .then(data => {
-                var selectSessao = document.getElementById("session-select");
-
-                data.sessoes.forEach(function(sessao) {
-                    var option = document.createElement("option");
-                    option.value = sessao;
-                    option.textContent = sessao;
-                    selectSessao.appendChild(option);
-                });
-            })
-            .catch(error => {
-                console.error(error);
-            });
-        }
-
-        // Chama a função para carregar as sessões assim que a página for carregada
-        carregarSessoes();
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -153,7 +63,6 @@
                             botaoEnviar.disabled = false;
                         }
                     }
-
                     var pergunta = perguntaTextarea.value;
 
                     if (pergunta && pergunta !== "Perguntar ao Bot...") {
@@ -201,75 +110,14 @@
             }
         });
     </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-        var fileInput = document.getElementById("fileInput");
-        var file = fileInput.files[0];
-
-        if (file) {
-            var formData = new FormData();
-            formData.append("file", file);
-
-            fetch("/upload", {
-                 method: "POST",
-                 body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                 var pdfText = data.pdf_text;
-                 var perguntaTextarea = document.getElementById("pergunta-textarea");
-                 perguntaTextarea.value = pdfText;
-             })
-        } else {
-             alert("Selecione um arquivo antes de enviar.");
-        }
-
-        // Função para carregar o texto do PDF na textarea
-        function carregarTextoDoPDF() {
-            // Fazer uma solicitação para /upload para obter o texto do PDF
-            fetch('/upload') .then(response => response.json()) .then(data => {
-                var pdfText = data.pdf_text;
-                // Exibe o texto do PDF na área de entrada do usuário
-                var perguntaTextarea = document.getElementById("pergunta-textarea");
-                perguntaTextarea.value = pdfText;
-            });
-            .catch(error => {
-                console.error(error);
-                alert('Ocorreu um erro ao carregar o texto do PDF.');
-             });
-        }
-        $(document).ready(function() {
-            $('input[type="file"]').on('change', function() {
-                if (this.files.length > 0) {
-                    $('#enviar-ao-chat').prop('disabled', false);
-                } else {
-                    $('#enviar-ao-chat').prop('disabled', true);
-                }
-            });
-        });
-    </script>
 
 </head>
 <body>
     <div class="first-section">
-        <h2 class="section-heading">Sessões</h2>
-        <select id="session-select">
-            <option value="MinhaSessao">Minha Sessão</option>
-        </select>
-        <div class="useful-links">
-            <h3>Links Úteis</h3>
-            <ul id="link-list">
-            </ul>
-            <div class="add-link">
-                <input type="text" id="new-link" placeholder="Digite o URL do novo link">
-                <button id="add-link">Adicionar</button>
-            </div>
-        </div>
-        <div>
-            <h3>Upload de Arquivo PDF</h3>
-            <form method="POST" action="/upload" enctype="multipart/form-data">
-                <input type="file" name="file" accept=".pdf">
-                <input type="submit" id="enviar-ao-chat" value="Enviar ao chat">
+        <h3>Upload de Arquivo PDF</h3>
+        <form method="POST" action="/upload" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".pdf">
+            <input type="submit" id="enviar-ao-chat" value="Enviar">
             </form>
         </div>
         <div class="logout-button">
@@ -281,16 +129,11 @@
     <div class="second-section" id="dialog-section">
         <div class="scrollable-content">
         </div>
-        <div class="scrollable-content">
-            <div class="user-input">
-                <div class="input-container">
-                    <textarea id="pdf-text-area" rows="10" cols="40" placeholder="Perguntar ao Bot...">{{ pdf_text }}</textarea>
-                    <span id="processando-message" style="display: none;">Processando...</span>
-                    <div class="button-container">
-                        <button id="enviar" class="button" style="display: block;">Enviar ao Bot</button>
-                        <button id="nova-sessao" class="button" style="display: block; margin-top: 15px;">Nova Sessão</button>
-                        <button id="encerrar-sessao" class="button" style="display: block; margin-top: 15px;">Encerrar Sessão</button>
-                    </div>
+        <div class="user-input">
+            <div class="input-container">
+                <textarea id="pdf-text-area" rows="10" cols="40" placeholder="Perguntar ao Bot..."></textarea>
+                <div class="button-container">
+                    <button id="enviar" class="button" style="display: block;">Enviar ao Bot</button>
                 </div>
             </div>
         </div>
