@@ -115,15 +115,3 @@ textarea {
     margin-top: 20px;
 }
 
-#session-select, #new-link, #add-link {
-    margin-left: 0px; /* Margem à esquerda */
-    margin-right: 10px; /* Margem à direita de 20px */
-    font-size: 15px;
-    font-family: Arial, sans-serif;
-}
-
-/* Aumenta o tamanho da fonte das mensagens dentro das caixas */
-#link-list a {
-    font-size: 15px; /* Aumenta o tamanho da fonte para 18 pixels ou outro valor desejado */
-    font-family: Arial, sans-serif;
-}
