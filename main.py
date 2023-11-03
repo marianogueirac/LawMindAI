@@ -39,14 +39,15 @@ def load_user(user_id):
     return None
 def mychat(prompt):
     openai.api_key = "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"
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=prompt,
-        max_tokens=2048,
-        temperature=0.10,
-        top_p=0,
-    )
-    return response.choices[0].text
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[
+    {"role": "system", "content": "You are a helpful PDF Reader and a Chatbot"},
+    {"role": "user", "content": prompt}
+  ]
+)
+    print(completion)
+    return completion.choices[0].message.content
 
 @app.route('/')
 def homepage():
