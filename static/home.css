@@ -1,0 +1,80 @@
+body {
+    background-image: url("/static/fundo2.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+}
+
+.logo {
+
+    position: absolute;
+    width: 118px;
+    color: #FFF;
+    font-family: Roboto Mono;
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    top: 5%; /* Centraliza verticalmente */
+    left: 10%; /* Centraliza horizontalmente */
+    transform: translate(-50%, -50%); /* Move o elemento de volta em 50% do seu próprio tamanho para centralizá-lo corretamente */
+}
+
+
+.retangulo{
+
+    position: relative;
+    width: 500px;
+    height: 440px;
+    flex-shrink: 0;
+    border-radius: 30px;
+    background: #c7c7c7;
+    top: 100px;
+    left: 65px;
+    z-index: 1;
+}
+
+.texto{
+
+    position: absolute;
+    width: 440px;
+    height: 379px;
+    flex-shrink: 0;
+    color: #000;
+    font-family: Roboto;
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 35px; /* 140% */
+    top: 50%; /* Centraliza verticalmente */
+    left: 50%; /* Centraliza horizontalmente */
+    transform: translate(-50%, -50%); /* Move o elemento de volta em 50% do seu próprio tamanho para centralizá-lo corretamente */
+    z-index: 2;
+}
+
+
+#ChatGPT{
+
+    position: absolute;
+    top: 80%; /* Centraliza verticalmente */
+    left: 22%; /* Centraliza horizontalmente */
+    transform: translate(-50%, -50%); /* Move o elemento de volta em 50% do seu próprio tamanho para centralizá-lo corretamente */
+    z-index: 2;
+    display: flex;
+    width: 500px;
+    height: 80px;
+    padding: 13px 28px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    border-radius: 20px;
+    background: #ffffff;
+    color: #2E6304;
+    font-family: Roboto Mono;
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+
+}

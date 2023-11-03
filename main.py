@@ -38,7 +38,7 @@ def load_user(user_id):
         return User(user[0])
     return None
 def mychat(prompt):
-    openai.api_key = "---------chave openai aqui------------"
+    openai.api_key = "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"
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
@@ -50,7 +50,7 @@ def mychat(prompt):
 
 @app.route('/')
 def homepage():
-    return render_template('homepage.html')
+    return render_template('hometext.html')
 
 @app.route('/register', methods=['POST'])
 def register():
