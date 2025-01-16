@@ -19,7 +19,7 @@ LawMindAI é um sistema web que utiliza inteligência artificial para auxiliar n
 ## Como Usar
 
 1. Clone o repositório:
-    git clone https://github.com/seu-usuario/LawMindAI.git
+    git clone https://github.com/marianogueirac/LawMindAI.git
 
 2. Instale as dependências:
     cd LawMindAI
