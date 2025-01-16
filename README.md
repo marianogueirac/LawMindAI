@@ -29,5 +29,5 @@ LawMindAI é um sistema web que utiliza inteligência artificial para auxiliar n
     python app.py
 
 
-![Interface LawMindAI](images/interface.png)
+![Interface LawMindAI](static/interface.png)
 
