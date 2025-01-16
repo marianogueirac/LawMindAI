@@ -38,7 +38,7 @@ def load_user(user_id):
         return User(user[0])
     return None
 def mychat(prompt):
-    openai.api_key = "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"
+    openai.api_key = "your-api-key"
     completion = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
     messages=[
